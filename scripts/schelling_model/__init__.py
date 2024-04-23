@@ -1,0 +1,1 @@
+from schelling_model.model import SchellingModel
