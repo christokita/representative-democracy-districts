@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import numpy as np
+import pandas as pd
 import random
 from scipy import signal
 from typing import List
@@ -259,5 +260,5 @@ class SchellingModel:
         y_flat = y.ravel()
         value_flat = grid.ravel()
         long_grid = np.column_stack((x_flat, y_flat, value_flat))
-        return long_grid
+        return pd.DataFrame(long_grid, columns=["grid_x", "grid_y", "identity"])
 
