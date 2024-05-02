@@ -7,6 +7,10 @@ from scipy import signal
 from typing import List
 
 
+MODEL_COLORS = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"]
+# MODEL_COLORS = ["#420a68", "#fca50a", "#932667", "#dd513a", "#000004"]
+
+
 class SchellingModel:
     """
     Class for our Schelling model of social segregation.
@@ -158,7 +162,7 @@ class SchellingModel:
     
 
     def _plot_grid(
-            self, stage: str = "current", vacant_color: str = "white", colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"], ax: plt.axes = None
+            self, stage: str = "current", vacant_color: str = "white", colors: List[str] = MODEL_COLORS, ax: plt.axes = None
         ) -> None:
         """
         Visualize populated grid.
@@ -203,7 +207,7 @@ class SchellingModel:
         return ax
     
     def show_grid(
-            self, stage: str = "current", vacant_color: str = "white", colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"]
+            self, stage: str = "current", vacant_color: str = "white", colors: List[str] = MODEL_COLORS
         ) -> None:
         """
         Visualize a stage of the populated grid.
@@ -221,7 +225,7 @@ class SchellingModel:
         plt.show()
 
     def show_grid_evolution(
-            self, vacant_color: str = "white", colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"]
+            self, vacant_color: str = "white", colors: List[str] = MODEL_COLORS
         ) -> None:
         """
         Visualize grid before and after simulation.
