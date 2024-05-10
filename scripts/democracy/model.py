@@ -26,7 +26,7 @@ class LegislativeDistricts:
         self.y_col = y_column
         self.identity_col = identity_column
 
-    def create_districts(self, district_width, district_height) -> None:
+    def create_districts(self, district_width: int, district_height: int, verbose: bool = True) -> None:
         """
         Assign each voter to a legislative district.
         In order to make sure districts are evenly sized,
@@ -35,6 +35,7 @@ class LegislativeDistricts:
         Parameters:
             district_width:     desired width of each district.
             district_height:    desired height of each district.
+            verbose:            whether to display message upon district creation.
 
         Returns:
             None. Adds `district` column to self.voters dataframe.
@@ -53,7 +54,8 @@ class LegislativeDistricts:
         
         # Print message
         n_districts = num_districts_per_row*num_districts_per_col
-        print(f"Generated {n_districts:,} voting districts, each with {int(self.voters.shape[0]/n_districts):,} voters.")
+        if verbose:
+            print(f"Generated {n_districts:,} voting districts, each with {int(self.voters.shape[0]/n_districts):,} voters.")
         return None 
 
     def conduct_election(self, members_per_district: int = 1) -> Tuple[pd.DataFrame]:
@@ -111,6 +113,7 @@ class LegislativeDistricts:
         })
         for _, row in representation.iterrows():
             district_voters = self.voters[self.voters.district == row.district]
+            district_voters = district_voters[district_voters.identity != -1]
             district_representatives = elected[elected.district == row.district]
             representation.loc[representation.district == row.district, "n_voters"] = district_voters.shape[0]
             representation.loc[representation.district == row.district, "n_represented"] = sum(district_voters.identity.isin(district_representatives.representive_identity))
