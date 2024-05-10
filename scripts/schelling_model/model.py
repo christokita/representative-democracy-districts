@@ -93,13 +93,14 @@ class SchellingModel:
         random.shuffle(spot_values)
         return np.reshape(spot_values, newshape=tuple(dimensions))
     
-    def evolve(self, max_steps: int = 1000, boundary = "wrap") -> None:
+    def evolve(self, max_steps: int = 1000, boundary: str = "wrap", verbose: bool = True) -> None:
         """
         Simulate Schelling model on the population grid.
 
         Parameters:
             max_steps:  maximum number of steps to run model.
             boundary:   how boundaries are dealt with on the grid.
+            verbose:    whether to display evolution progress messages.
 
         Returns:
             None (this updates self.grid)
@@ -156,7 +157,8 @@ class SchellingModel:
             # Update step
             step += 1
         
-        print(f"Model simulation done at t = {step:,}")
+        if verbose:
+            print(f"Model simulation done at t = {step:,}")
         self.t_end = step
         return None
     
