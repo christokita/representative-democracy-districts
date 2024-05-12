@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import pandas as pd
+from scipy import stats
 from typing import Tuple
 
 class LegislativeDistricts:
@@ -75,8 +76,7 @@ class LegislativeDistricts:
             self.voters
                 .groupby(["district", self.identity_col])
                 .size()
-                .reset_index()
-                .rename(columns={0: "votes"})
+                .reset_index(name="votes")
                 .sort_values(by=["district", "votes"], ascending=[True,False])
                 .reset_index(drop=True)
         )
@@ -94,6 +94,41 @@ class LegislativeDistricts:
                 .drop(columns=["votes"])
         )
         return district_votes, elected
+    
+    def calculate_segregation(self) -> pd.DataFrame:
+        """
+        Calculate the social segregation within each district and across the entire population.
+        """
+        # Calculate identity breakdown by district
+        district_demographics = (
+            self.voters
+            .groupby(["district", "identity"])
+            .size()
+            .reset_index(name="voters")
+            .pivot(index="district", columns="identity", values="voters")
+            .fillna(0)
+        )
+        district_demographics = district_demographics.drop(columns=[-1]) #drop vancancies
+
+        # Calculate overall entropy
+        E = stats.entropy( district_demographics.sum(axis=0) )
+        T = district_demographics.values.sum()
+
+        # Calcualte segregation by district
+        E_i = district_demographics.apply(stats.entropy, axis=1)
+        T_i = district_demographics.sum(axis=1)
+
+        district_segregation = pd.DataFrame({
+            "district": district_demographics.index,
+            "n_voters": T_i,
+            "diversity": E_i,
+            "segregation": (E - E_i) / E
+        })
+        district_segregation = district_segregation.reset_index(drop=True)
+
+        # Calculate Thiel's Index
+        H = sum(district_segregation.n_voters/T * district_segregation.segregation)
+        return district_segregation, H
     
     def calculate_representation(self, elected: pd.DataFrame) -> pd.DataFrame:
         """
