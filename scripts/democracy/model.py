@@ -108,7 +108,10 @@ class LegislativeDistricts:
             .pivot(index="district", columns="identity", values="voters")
             .fillna(0)
         )
-        district_demographics = district_demographics.drop(columns=[-1]) #drop vancancies
+
+        # Drop vancancies
+        if -1 in district_demographics.columns:
+            district_demographics = district_demographics.drop(columns=[-1]) 
 
         # Calculate overall entropy
         E = stats.entropy( district_demographics.sum(axis=0) )
